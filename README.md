@@ -1,25 +1,34 @@
-<<<<<<< HEAD
 # GET PARKED 2023
 
 Visual Studio Code for GET PARKED Mobile Andriod Application
 
 
+## Requirements
+* Visual Studio Code
+* PubSpec.yaml
+* Android Studio
+* Other requirements
+    Android Device
+
+
+
+
 ## Installation
 
-Installing the required packages for GET PARKED 
+Download or clone this repo by using the link below
 
 ```
-bash git clone https://github.com/jawshoa/get_parked_2023.git
+https://github.com/jawshoa/get_parked_2023.git
 ```
 
 
 
-Navigate to the project directory:
+Navigate to the project root directory:
 ```
-cd g_p-main-merged
+cd get_parked_2023
 ```
 
-Install dependencies
+Execute the following command in terminal to install required dependencies:
 ```
 flutter pub get
 ```
@@ -28,7 +37,7 @@ flutter pub get
 ## Running the app 
 Once the dependencies are installed, you can run the GET PARKED app using:
 ```
-flutter run
+flutter pub run build_runner build
 ```
 
 For help getting started with Flutter development, view the
