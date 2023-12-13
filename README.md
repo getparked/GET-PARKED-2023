@@ -45,7 +45,7 @@ flutter pub run build_runner build
 
 ### Pages
 
-##Homepage
+## Homepage
 
 The code imports the necessary packages and files for the application.
 The chwlot1 class is a stateful widget that represents the main screen of the application. It takes a list of boolean values booleanParkingDataList as a parameter.
@@ -58,8 +58,8 @@ The build method is responsible for building the UI of the application. It uses 
 The RectanglePainter class is a custom painter that is used to draw rectangles representing the parking spaces on the parking lot image. The color of the rectangles is determined by the availability status stored in the booleanParkingDataList variable.
 
 
-##Map
-The #Map class is a stateful widget that represents the main screen of the application. It takes a list of boolean values as a parameter, which is used to determine the availability of parking lots.
+## Map
+The Map class is a stateful widget that represents the main screen of the application. It takes a list of boolean values as a parameter, which is used to determine the availability of parking lots.
 The _MapState class is the state class for the Map widget. It contains the necessary methods and variables to interact with the Google Maps plugin.
 The build method of the _MapState class returns a Scaffold widget that contains an AppBar and a GoogleMap widget. The AppBar displays the title of the screen and a logo. The GoogleMap widget displays the map and markers for the parking lots.
 The _onMapCreated method is called when the map is created and assigns the GoogleMapController to the mapController variable.
