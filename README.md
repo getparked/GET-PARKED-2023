@@ -1,45 +1,55 @@
 # GET PARKED 2023
 
-Visual Studio Code for GET PARKED Mobile Andriod Application
-
+Welcome to the GET PARKED 2023 project, a parking spot detection system developed using Flutter and Dart in Visual Studio Code.
 
 ## Requirements
-* Visual Studio Code
-* PubSpec.yaml
-* Android Studio
-* Other requirements
-    Android Device
+Before getting started, make sure you have the following tools installed:
 
-
+* [Visual Studio Code](https://code.visualstudio.com/)
+* [Flutter SDK](https://flutter.dev/docs/get-started/install)
+* [Android Studio](https://developer.android.com/studio)
+* Android Device (or Android Studio Emulator)
 
 
 ## Installation
 
-Download or clone this repo by using the link below
+1. Download or clone this repository using the following link:
 
 ```
-https://github.com/jawshoa/get_parked_2023.git
+git clone https://github.com/jawshoa/get_parked_2023.git
 ```
 
+2. Navigate to the project root directory:
 
-
-Navigate to the project root directory:
 ```
 cd get_parked_2023
 ```
 
-Execute the following command in terminal to install required dependencies:
+3. Install the required dependencies by executing the following command in the terminal:
 ```
 flutter pub get
 ```
 
 
-## Running the app 
-Once the dependencies are installed, you can run the GET PARKED app using:
+## Running the App
+
+Once the dependencies are installed, follow these steps to run the GET PARKED app:
+
+1. Open Visual Studio Code and navigate to the project directory.
+
+2. Run the following command to build the project:
+   
 ```
 flutter pub run build_runner build
 ```
 
+3. Make sure you have an Android device connected or an Android Studio emulator running.
+
+4. Run the app using the following command:
+
+```
+flutter run
+```
 
 
 
@@ -83,6 +93,7 @@ flutter pub run build_runner build
 
 
 ### Settings
+
 
 
 ### Parking Lot Page
