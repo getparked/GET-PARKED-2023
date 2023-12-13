@@ -207,9 +207,6 @@ class _Settings1NotificationsWidgetState
 
 
 
-
-
-
          
           ListTile(
             onTap: () => {

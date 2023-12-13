@@ -34,12 +34,10 @@ class _BugreportState extends State<Bugreport> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _textFieldFocusNode1.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_textFieldFocusNode1)
-          : FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
+          // start of app bar
           backgroundColor: Colors.white,
           leading: IconButton(
             icon: Icon(
@@ -48,12 +46,12 @@ class _BugreportState extends State<Bugreport> {
               size: 30,
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop();        // return to previous page
             },
           ),
           title: Text(
             'Report a Bug',
-            style: TextStyle(
+            style: TextStyle(         // text charateristics
               fontFamily: 'Urbanist',
               color: Color(0xFF0B191E),
               fontSize: 24,
@@ -89,9 +87,6 @@ class _BugreportState extends State<Bugreport> {
                   ),
                   SizedBox(height: 12),
                   TextFormField(
-                    controller: _textController1,
-                    focusNode: _textFieldFocusNode1,
-                    autofocus: true,
                     decoration: InputDecoration(
                       labelText: 'Bug Name...',
                     ),
@@ -115,7 +110,7 @@ class _BugreportState extends State<Bugreport> {
                       'https://storage.googleapis.com/getparked/logo.png',
                       width: double.infinity,
                       height: 100,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.cover,      // stretch to fit dimensions of screen
                     ),
                   ),
                   SizedBox(height: 16),
@@ -145,7 +140,7 @@ class _BugreportState extends State<Bugreport> {
                               'Upload Screenshot',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: Colors.black54,
+                                color: Colors.black54,        // fake screenshot bar
                               ),
                             ),
                           ),
@@ -156,7 +151,7 @@ class _BugreportState extends State<Bugreport> {
                   SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () {
-                      print('Button pressed ...');
+                      print('Button pressed ...');        // submit ticket on press of button. No place to submit ticket
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

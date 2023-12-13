@@ -17,20 +17,14 @@ class TTNDataPage extends StatefulWidget {
 }
 
 class _TTNDataPageState extends State<TTNDataPage> {
-
   final controller = TextEditingController();
   //List<int> binaryList = [];
   //List<bool> booleanParkingDataList = [true,];
-  List<bool> booleanParkingDataList= [];
-
+  List<bool> booleanParkingDataList = [];
 
   List<bool> getBooleanParkingDataList() {
-
     return booleanParkingDataList;
   }
-
-
-
 
   String frmPayload = '';
 
@@ -38,34 +32,37 @@ class _TTNDataPageState extends State<TTNDataPage> {
   void initState() {
     super.initState();
     GetParkingData();
-
-
   }
 
-  Future<String> GetParkingData() async { //Function for getting parking data from tago.io and converting to booleon string
+  Future<String> GetParkingData() async {
+    //Function for getting parking data from tago.io and converting to booleon string
     try {
-
-      String url = "https://api.tago.io/data?variable=payload&query=last_value"; //this url also encodes which specific data we would like with the ?variable&query
-      final response = await http.get(Uri.parse(url), //uses http.get to recieve parking data and uses uri to create objects from a string
+      String url =
+          "https://api.tago.io/data?variable=payload&query=last_value"; //this url also encodes which specific data we would like with the ?variable&query
+      final response = await http.get(
+          Uri.parse(
+              url), //uses http.get to recieve parking data and uses uri to create objects from a string
           headers: {
-            HttpHeaders
-                .authorizationHeader: '3a2a6522-9335-491e-addd-63521d380e5d', //password required by tago.io
+            HttpHeaders.authorizationHeader:
+                '3a2a6522-9335-491e-addd-63521d380e5d', //password required by tago.io
           });
       //print(response.body); //for testing
-      if (response.statusCode == 200) { //if we recieve a valid response
+      if (response.statusCode == 200) {
+        //if we recieve a valid response
 
         // Parse JSON and extract payload
-        Map<String, dynamic> jsonResponse = json.decode(response.body); //map the contents of the string
+        Map<String, dynamic> jsonResponse =
+            json.decode(response.body); //map the contents of the string
 
         if (jsonResponse.containsKey("result") && //is this what we expected?
             jsonResponse["result"] is List &&
-            jsonResponse["result"].isNotEmpty)
-        {
-
-
-          String hexPayload = jsonResponse["result"][0]["value"]; //we recieve a 'result' that has a 'value' we want the first one of that
-          String binaryPayload = hexToBinary(hexPayload); //converts to a string of 1's and 0's from hex
-          setBooleanParkingDataList(binaryPayload);//converts the string to booleon equivilant
+            jsonResponse["result"].isNotEmpty) {
+          String hexPayload = jsonResponse["result"][0][
+              "value"]; //we recieve a 'result' that has a 'value' we want the first one of that
+          String binaryPayload = hexToBinary(
+              hexPayload); //converts to a string of 1's and 0's from hex
+          setBooleanParkingDataList(
+              binaryPayload); //converts the string to booleon equivilant
 
           // Set the payload to the state variable
           setState(() {
@@ -74,26 +71,22 @@ class _TTNDataPageState extends State<TTNDataPage> {
 
           // Return the payload
           return hexPayload;
-
-        }
-        else {
+        } else {
           print("else");
           throw Exception('No valid result in the response');
         }
       } else {
         throw Exception('Failed to load data');
       }
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw e; // Rethrow the exception to handle it in the UI
     }
   }
 
   void setBooleanParkingDataList(String binaryPayload) {
-
     List<bool> updatedList = binaryPayload //create list of type bool
-        .split('')//split the string in to individual characters
+        .split('') //split the string in to individual characters
         .map((char) => char == '1') //asks if char = 1 and
         .toList(); //if yes map that value to the list
 
@@ -108,17 +101,14 @@ class _TTNDataPageState extends State<TTNDataPage> {
     return BigInt.parse(hex, radix: 16).toRadixString(2);
   }
 
-
   @override
-  Widget build(BuildContext context) => 
-  Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
+        // app bar info
         backgroundColor: Colors.black,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-
-            
             Text(
               'Homepage',
               style: TextStyle(
@@ -135,37 +125,30 @@ class _TTNDataPageState extends State<TTNDataPage> {
             ),
           ],
         ),
-
-      ),
-
+      ), // end of app bar
 
       body: ListView(
+        // vertical list view widget of parking lots
         padding: EdgeInsets.symmetric(vertical: 5),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         children: [
           //Text(frmPayload),
           SizedBox(height: 10),
-          
+
           //ElevatedButton(
           //  onPressed: () {
-              //print('Binary List Values for Parking Availability: $binaryList');
-
+          //print('Binary List Values for Parking Availability: $binaryList');
           //    print(
-                //  'Boolean List Values for Parking Availability: $booleanParkingDataList');
-                  
-        //  },
+          //  'Boolean List Values for Parking Availability: $booleanParkingDataList');
+          //  },
           //  child: Text('Show 4-bit Binary Data'),
-         // ),
-         
-
-          
-
+          // ),
 
           Padding(
+            // Widget for Hot Wheels Lot
 
-            // HOT WHEELS
-            padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
+            padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10), // spacing
             child: Container(
               width: 100,
               height: 199,
@@ -182,15 +165,19 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => hotWheels(booleanParkingDataList:
-                                    getBooleanParkingDataList())));
-                                            print(frmPayload);
+                      // on tap of the image, goto to hotWheels class and bring parking data with it
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => hotWheels(
+                                  booleanParkingDataList:
+                                      getBooleanParkingDataList()))); // function to return booleanParkingDataList
+                      print(frmPayload);
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(33),
                       child: Image.network(
-                        'https://storage.googleapis.com/getparked/HotWheelsLot1.jpg',
+                        'https://storage.googleapis.com/getparked/HotWheelsLot1.jpg', // Hot Wheels image pulled from Google cloud
                         width: 410,
                         height: 141,
                         fit: BoxFit.fitWidth,
@@ -212,14 +199,13 @@ class _TTNDataPageState extends State<TTNDataPage> {
                       ),
                     ],
                   ),
-                 Row(
+                  Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                         child: Text(
-
-                          '${booleanParkingDataList.where((spot) => !spot).length} AVAILABLE SPOTS',
+                          '${booleanParkingDataList.where((spot) => !spot).length} AVAILABLE SPOTS', // available spots based on boolean parking data recieved
                           style: TextStyle(
                             fontFamily: 'Urbanist',
                           ),
@@ -231,6 +217,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
               ),
             ),
           ),
+
           Padding(
             // CHW LOT 1
             padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
@@ -250,20 +237,22 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      print("Boolean list $booleanParkingDataList");
+                      print(
+                          "Boolean list $booleanParkingDataList"); // print current booleanParkingList to console to verify proper data transmission
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => chwlot1(
+                                // on tap of the image, goto to chwLot1 class and bring parking data with it
                                 booleanParkingDataList:
-                                    getBooleanParkingDataList()),
+                                    getBooleanParkingDataList()), // function to return booleanParkingDataList
                           ));
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(33),
                       child: FittedBox(
                         child: Image.network(
-                          'https://storage.googleapis.com/getparked/CHW%20lot1.jpg',
+                          'https://storage.googleapis.com/getparked/CHW%20lot1.jpg', // CHW Lot image pulled from Google cloud
                           width: 425,
                           height: 141,
                           fit: BoxFit.cover,
@@ -292,7 +281,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                         child: Text(
-                          '${booleanParkingDataList.where((spot) => !spot).length} AVAILABLE SPOTS',
+                          '${booleanParkingDataList.where((spot) => !spot).length} AVAILABLE SPOTS', // available parking counts based on boolean parking data recieved
                           style: TextStyle(
                             fontFamily: 'Urbanist',
                           ),
@@ -304,6 +293,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
               ),
             ),
           ),
+
           Padding(
             // CBA LOT 1
             padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
@@ -323,13 +313,16 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => cbalot1()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  cbalot1())); // on tap of the image, goto to cbaLot1 class and bring parking data with it
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(33),
                       child: Image.network(
-                        'https://storage.googleapis.com/getparked/CBA%20lot1.jpg',
+                        'https://storage.googleapis.com/getparked/CBA%20lot1.jpg', // image pulled from google cloud
                         width: 425,
                         height: 141,
                         fit: BoxFit.cover,
@@ -369,6 +362,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
               ),
             ),
           ),
+
           Padding(
             // CHW LOT 2
             padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
@@ -388,13 +382,16 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => chwlot2()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  chwlot2())); // on tap of the image, goto to chwLot2 class and bring parking data with it
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(33),
                       child: Image.network(
-                        'https://storage.googleapis.com/getparked/CHW%20lot2.jpg',
+                        'https://storage.googleapis.com/getparked/CHW%20lot2.jpg', // image pulled from google cloud
                         width: 425,
                         height: 141,
                         fit: BoxFit.cover,
@@ -405,7 +402,8 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 5),
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            10, 10, 10, 5), // spacing
                         child: Text(
                           'CHW Lot 2',
                           style: TextStyle(
@@ -434,6 +432,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
               ),
             ),
           ),
+
           Padding(
             // PORT A LOT
             padding: EdgeInsetsDirectional.fromSTEB(15, 10, 15, 10),
