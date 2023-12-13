@@ -45,13 +45,20 @@ flutter pub run build_runner build
 
 ## Pages
 
+
 ### Homepage
 * The Home_Screen class is a stateless widget.
+  
 * The controller variable is created to handle text editing.
+  
 * The futureParklot variable is declared to hold the future value of a ParkingLot object.
+  
 * The build method returns a Scaffold widget with an AppBar and a ListView as the body.
+  
 * Inside the ListView, there are multiple Padding widgets, each representing a parking lot.
+  
 * Each parking lot is displayed as a Container with an image, name, and the number of available spots.
+  
 * The onTap property of the InkWell widget will bring you to that selected parking lot page.
 
 
