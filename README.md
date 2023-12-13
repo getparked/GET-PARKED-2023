@@ -41,6 +41,3 @@ flutter pub run build_runner build
 ```
 
 
-=======
-# GET-PARKED-2023
-GET PARKED Official Mobile App Repo
