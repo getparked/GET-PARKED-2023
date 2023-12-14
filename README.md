@@ -22,7 +22,7 @@ git clone https://github.com/getparked/get-parked-2023.git
 2. Navigate to the project root directory:
 
 ```
-cd get_parked_2023
+cd get-parked-2023
 ```
 
 3. Install the required dependencies by executing the following command in the terminal:
