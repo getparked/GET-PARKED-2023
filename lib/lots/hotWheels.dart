@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:g_p/format/LotLayout.dart';
 import 'package:flexible/flexible.dart';
-import 'package:g_p/pages/dataTesting.dart';
+import 'package:g_p/format/dataRetrieval.dart';
 
 String jsonURL =
-    "https://storage.googleapis.com/getparked/HotWheelsLot.json"; // URL to fetch parking lot dimensions from JSON file
+    "https://storage.googleapis.com/getparked/HotWheelsLot9.json"; // URL to fetch parking lot dimensions from JSON file
 
 class hotWheels extends StatefulWidget {
-  final List<bool> booleanParkingDataList;
+   List<bool> booleanParkingDataList;
 
   hotWheels(
       {required this.booleanParkingDataList}); // constructer to receive parking data from another widget / class
@@ -19,15 +19,20 @@ class hotWheels extends StatefulWidget {
 class _hotWheelsState extends State<hotWheels> {
   ParkingLot? parkingLot;
   Future<ParkingLot>? futureParkingLot;
+  Future<List<bool>>? futureParkingData;
 
   double imageHeight = 1080; // dimensions for parking lot image
   double imageWidth = 1920;
   int rotation = 0; // rotation for parking lot image
 
+
+  bool refreshed = false;
+
   @override
   void initState() {
     super.initState();
     fetchData(); // fetch parking data when the widget is intialiazed
+    futureParkingData = GetParkingData();
   }
 
   Future<void> fetchData() async {
@@ -52,8 +57,8 @@ class _hotWheelsState extends State<hotWheels> {
     int countOccupied = 0;
 
     for (bool value in widget.booleanParkingDataList) {
-      // available parking count increases for every true boolean value
       if (value) {
+        // true
         countAvailable++;
       } else {
         countOccupied++;
@@ -61,8 +66,16 @@ class _hotWheelsState extends State<hotWheels> {
     }
 
     return Scaffold(
+
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              // Pass back the updated data to the previous screen
+              Navigator.pop(context, widget.booleanParkingDataList);
+            },
+          ),
             backgroundColor: Colors.black12,
             title: Text('Hot Wheels Parking Lot')),
         //
@@ -91,23 +104,30 @@ class _hotWheelsState extends State<hotWheels> {
                             fit: BoxFit.fitHeight,
                             child: RotatedBox(
                               quarterTurns: rotation,
-                              child: CustomPaint(
-                                size: Size(imageWidth, imageHeight),
-                                child: Image.network(parkingLot!.lotURL),
+                              child: FutureBuilder<List<bool>>(
+                                future: futureParkingData,
+                                builder: (context, snapshot) {
 
-        
-                                foregroundPainter: RectanglePainter(  // Set the size as per image dimensions
-                                  parkingLot!.parkingStalls,
-                                  imageWidth,
-                                  imageHeight,
-                                  widget.booleanParkingDataList,
-                                ),
+
+                                  return CustomPaint(
+                                    size: Size(imageWidth, imageHeight),
+                                    child: Image.network(parkingLot!.lotURL),
+
+
+                                    foregroundPainter: RectanglePainter(  // Set the size as per image dimensions
+                                      parkingLot!.parkingStalls,
+                                      imageWidth,
+                                      imageHeight,
+                                      widget.booleanParkingDataList,
+                                    ),
+                                  );
+                                }
                               ),
                             ),
                           ),
                         ),
                       );
-                    } 
+                    }
 
                     else {
                       return Text('Error: ${snapshot.error}');}   // return exception if error
@@ -115,7 +135,7 @@ class _hotWheelsState extends State<hotWheels> {
                 ),
               ),
 
-              Row(                  // Parking availability 
+              Row(                  // Parking availability
                 // mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.end,
@@ -142,7 +162,7 @@ class _hotWheelsState extends State<hotWheels> {
 
                   Padding(
                     padding:
-                        EdgeInsetsDirectional.fromSTEB(0, 14, 0, 5), // spacing
+                    EdgeInsetsDirectional.fromSTEB(0, 14, 0, 5), // spacing
                     child: Text(
                       'Available: ',
                       style: TextStyle(
@@ -234,8 +254,13 @@ class _hotWheelsState extends State<hotWheels> {
 
                 ],
               ),
-              ElevatedButton(       // refresh button
-                onPressed: fetchData,
+              ElevatedButton(
+                onPressed: () async {
+                  List<bool> parkingData = await GetParkingData();
+                  setState(() {
+                    widget.booleanParkingDataList = parkingData;
+                  });
+                },
                 child: Text('Refresh'),
               )
             ],
@@ -255,7 +280,7 @@ class RectanglePainter extends CustomPainter {          // CustomPainter to pain
 
   @override
   void paint(Canvas canvas, Size size) {
-    print("oopsie");
+
     for (int i = 0; i < parkingStalls.length; i++) {
       final paint = Paint()..style = PaintingStyle.fill;
 
@@ -275,7 +300,7 @@ class RectanglePainter extends CustomPainter {          // CustomPainter to pain
       final rect2 = Rect.fromPoints(Offset(x2, y2),
           Offset(x2 + parkingStalls[i].OffsetX, y2 + parkingStalls[i].OffsetY));
 
-      paint.color = avab[i] ? Colors.green : Colors.red;
+      paint.color = avab[i] ? Colors.red : Colors.green;
       canvas.drawRect(rect, paint);
       canvas.drawRect(rect2, paint2);
     }

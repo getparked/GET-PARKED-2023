@@ -6,7 +6,7 @@ import 'package:g_p/lots/chwlot2.dart';
 import 'package:g_p/lots/porta.dart';
 import 'dart:io';
 import 'package:g_p/lots/hotWheels.dart';
-import "package:g_p/pages/dataTesting.dart";
+import 'package:g_p/format/dataRetrieval.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
@@ -31,8 +31,24 @@ class _TTNDataPageState extends State<TTNDataPage> {
   @override
   void initState() {
     super.initState();
-    GetParkingData();
+    fetchDataAndUpdateState();
   }
+
+
+  Future<void> fetchDataAndUpdateState() async {
+    try {
+      String hexPayload = await GetParkingData();
+      String binaryPayload = hexToBinary(hexPayload);
+      setBooleanParkingDataList(binaryPayload);
+    } catch (e) {
+      print(e);
+      // Handle the exception appropriately.
+    }
+  }
+
+
+
+
 
   Future<String> GetParkingData() async {
     //Function for getting parking data from tago.io and converting to booleon string
@@ -44,7 +60,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
               url), //uses http.get to recieve parking data and uses uri to create objects from a string
           headers: {
             HttpHeaders.authorizationHeader:
-                '3a2a6522-9335-491e-addd-63521d380e5d', //password required by tago.io
+            '3a2a6522-9335-491e-addd-63521d380e5d', //password required by tago.io
           });
       //print(response.body); //for testing
       if (response.statusCode == 200) {
@@ -52,22 +68,20 @@ class _TTNDataPageState extends State<TTNDataPage> {
 
         // Parse JSON and extract payload
         Map<String, dynamic> jsonResponse =
-            json.decode(response.body); //map the contents of the string
+        json.decode(response.body); //map the contents of the string
 
         if (jsonResponse.containsKey("result") && //is this what we expected?
             jsonResponse["result"] is List &&
             jsonResponse["result"].isNotEmpty) {
           String hexPayload = jsonResponse["result"][0][
-              "value"]; //we recieve a 'result' that has a 'value' we want the first one of that
+          "value"]; //we recieve a 'result' that has a 'value' we want the first one of that
           String binaryPayload = hexToBinary(
               hexPayload); //converts to a string of 1's and 0's from hex
           setBooleanParkingDataList(
               binaryPayload); //converts the string to booleon equivilant
 
           // Set the payload to the state variable
-          setState(() {
-            frmPayload = hexPayload;
-          });
+
 
           // Return the payload
           return hexPayload;
@@ -98,8 +112,17 @@ class _TTNDataPageState extends State<TTNDataPage> {
 
   String hexToBinary(String hex) {
     // Convert hexadecimal string to binary
-    return BigInt.parse(hex, radix: 16).toRadixString(2);
+    String binaryString = BigInt.parse(hex, radix: 16).toRadixString(2);
+
+    // Calculate the number of leading zeros to pad
+    int numLeadingZeros = hex.length * 4 - binaryString.length;
+
+    // Pad with leading zeros
+    String paddedBinaryString = '0' * numLeadingZeros + binaryString;
+
+    return paddedBinaryString;
   }
+
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -166,13 +189,18 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     highlightColor: Colors.transparent,
                     onTap: () async {
                       // on tap of the image, goto to hotWheels class and bring parking data with it
-                      Navigator.push(
+                      List<bool>? updatedData = await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => hotWheels(
                                   booleanParkingDataList:
-                                      getBooleanParkingDataList()))); // function to return booleanParkingDataList
-                      print(frmPayload);
+                                  getBooleanParkingDataList()))); // function to return booleanParkingDataList
+                      if (updatedData != null) {
+
+                        setState(() {
+                          booleanParkingDataList = updatedData;
+                        });
+                      }
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(33),
@@ -237,15 +265,14 @@ class _TTNDataPageState extends State<TTNDataPage> {
                     hoverColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     onTap: () async {
-                      print(
-                          "Boolean list $booleanParkingDataList"); // print current booleanParkingList to console to verify proper data transmission
+                     // print( "Boolean list $booleanParkingDataList"); // print current booleanParkingList to console to verify proper data transmission
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => chwlot1(
-                                // on tap of the image, goto to chwLot1 class and bring parking data with it
+                              // on tap of the image, goto to chwLot1 class and bring parking data with it
                                 booleanParkingDataList:
-                                    getBooleanParkingDataList()), // function to return booleanParkingDataList
+                                getBooleanParkingDataList()), // function to return booleanParkingDataList
                           ));
                     },
                     child: ClipRRect(
