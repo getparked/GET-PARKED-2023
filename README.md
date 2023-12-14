@@ -93,11 +93,11 @@ flutter run
 
 
 ### Settings
-* Main widget class Settings1NotificationsWidget which extends a StatefulWidget that represents a currnet state of the settings page.
+* The main widget class Settings1NotificationsWidget extends a StatefulWidget that represents a currnet state of the settings page.
 
-* The state class _Settings1NotificationsWidgetState extends State. It holds the state of the widget, including the values of the switch list tiles and a key for the scaffold widget.
+* The state class _Settings1NotificationsWidgetState holds the state of the widget, including the values of the switch list tiles and a key for the scaffold widget.
 
-* The body column section defines the app bar of the settings page, which includes the title "Settings" and an image logo.
+* The main body column section defines the app bar of the settings page, which includes the title "Settings" and our logo.
 
 * Padding section displays a text widget that prompts the user to choose their settings.
 
