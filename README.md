@@ -16,7 +16,7 @@ Before getting started, make sure you have the following tools installed:
 1. Download or clone this repository using the following link:
 
 ```
-git clone https://github.com/jawshoa/get_parked_2023.git
+git clone https://github.com/getparked/get-parked-2023.git
 ```
 
 2. Navigate to the project root directory:
