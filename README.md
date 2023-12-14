@@ -93,6 +93,17 @@ flutter run
 
 
 ### Settings
+* Main widget class Settings1NotificationsWidget which extends a StatefulWidget that represents a currnet state of the settings page.
+
+* The state class _Settings1NotificationsWidgetState extends State. It holds the state of the widget, including the values of the switch list tiles and a key for the scaffold widget.
+
+* The body column section defines the app bar of the settings page, which includes the title "Settings" and an image logo.
+
+* Padding section displays a text widget that prompts the user to choose their settings.
+
+* SwitchListTile section displays a switch list tile widget that represents the "Location Services" and "Enable Dark Mode" setting. The user can toggle the switch to enable or disable location tracking.
+
+* The ListTile section displays a list tile widget that represents the option to submit a feature. When tapped, it navigates to the Features page or it navigates to the Bugreport page.
 
 
 
