@@ -16,13 +16,13 @@ Before getting started, make sure you have the following tools installed:
 1. Download or clone this repository using the following link:
 
 ```
-git clone https://github.com/jawshoa/get_parked_2023.git
+git clone https://github.com/getparked/get-parked-2023.git
 ```
 
 2. Navigate to the project root directory:
 
 ```
-cd get_parked_2023
+cd get-parked-2023
 ```
 
 3. Install the required dependencies by executing the following command in the terminal:
@@ -93,6 +93,17 @@ flutter run
 
 
 ### Settings
+* The main widget class Settings1NotificationsWidget extends a StatefulWidget that represents a currnet state of the settings page.
+
+* The state class _Settings1NotificationsWidgetState holds the state of the widget, including the values of the switch list tiles and a key for the scaffold widget.
+
+* The main body column section defines the app bar of the settings page, which includes the title "Settings" and our logo.
+
+* Padding section displays a text widget that prompts the user to choose their settings.
+
+* SwitchListTile section displays a switch list tile widget that represents the "Location Services" and "Enable Dark Mode" setting. The user can toggle the switch to enable or disable location tracking.
+
+* The ListTile section displays a list tile widget that represents the option to submit a feature. When tapped, it navigates to the Features page or it navigates to the Bugreport page.
 
 
 
