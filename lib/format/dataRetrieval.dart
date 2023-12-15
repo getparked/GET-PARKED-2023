@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-Future<List<bool>> GetParkingData() async {
+Future<List<bool>> GetParkingData(String authorization) async {
   //Function for getting parking data from tago.io and converting to booleon string
   try {
     String url =
@@ -13,7 +13,7 @@ Future<List<bool>> GetParkingData() async {
         //uses http.get to recieve parking data and uses uri to create objects from a string
         headers: {
           HttpHeaders.authorizationHeader:
-          '3a2a6522-9335-491e-addd-63521d380e5d',
+          authorization,
           //device specific password required by tago.io
         });
     //print(response.body); //for testing

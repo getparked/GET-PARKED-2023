@@ -1,28 +1,49 @@
 
 
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:g_p/lots/cbalot1.dart';
-import 'package:g_p/lots/chwlot2.dart';
 import 'package:g_p/lots/chwlot1.dart';
+import 'package:g_p/lots/chwlot2.dart';
+import 'package:g_p/lots/hotWheels.dart';
 import 'package:g_p/lots/porta.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 
 
-class Map extends StatefulWidget {
-  final List<bool> booleanParkingDataList;
-
-  const Map({required this.booleanParkingDataList});
+class gMap extends StatefulWidget {
   @override
-
-  State<Map> createState() => _MapState();
+  State<gMap> createState() => _gMapState();
 }
 
 
-class _MapState extends State<Map> {
+class _gMapState extends State<gMap> {
+
+  String HotWheelsHeader = "252571ba-369d-465e-abad-690a5670b2ad";
+  String CHWHeader = "3a2a6522-9335-491e-addd-63521d380e5d";
+  List<bool> hotWheelsData = List.filled(24, false);
+
+  List<bool> CHWLot1Data = List.filled(180, false);
+
+  List<bool> getHotWheelsData() {
+    //  print(hotWheelsData);
+    return hotWheelsData;
+  }
+
+  List<bool> getCHWLot1Data() {
+    // print(CHWLot1Data);
+    return CHWLot1Data;
+  }
+
+
+
+
+
+
   late GoogleMapController mapController;
   Completer<GoogleMapController> _controller = Completer();
   TextEditingController _searchController = TextEditingController();
@@ -31,12 +52,153 @@ class _MapState extends State<Map> {
   static const LatLng PISElot2 = LatLng(48.488359, -123.415606);
   static const LatLng Teclot = LatLng(48.49100021607449, -123.41433389677556);
   static const LatLng Frontlot = LatLng(48.489749134000775, -123.41793289900832);
+  static const LatLng HHLatLong = LatLng(48.49276912961702, -123.41746796037559);
 
 
 
 
+  @override
+  void initState() {
+    super.initState();
+    GetParkingData1(HotWheelsHeader);
+    GetParkingData2(CHWHeader);
+  }
 
+  GetParkingData1(String authorization) async {
+    //Function for getting parking data from tago.io and converting to booleon string
 
+    try {
+      String url =
+          "https://api.tago.io/data?variable=payload&query=last_value"; //this url also encodes which specific data we would like with the ?variable&query
+      final response = await http.get(Uri.parse(url),
+          //uses http.get to recieve parking data and uses uri to create objects from a string
+          headers: {
+            HttpHeaders.authorizationHeader:
+            authorization, //password required by tago.io
+          });
+      //for testing
+      if (response.statusCode == 200) {
+        //if we recieve a valid response
+
+        // Parse JSON and extract payload
+        Map<String, dynamic> jsonResponse =
+        json.decode(response.body); //map the contents of the string
+
+        if (jsonResponse.containsKey("result") && //is this what we expected?
+            jsonResponse["result"] is List &&
+            jsonResponse["result"].isNotEmpty) {
+          String hexPayload = jsonResponse["result"][0][
+          "value"]; //we recieve a 'result' that has a 'value' we want the first one of that
+          print(hexPayload);
+          String binaryPayload = hexToBinary(
+              hexPayload); //converts to a string of 1's and 0's from hex
+          setBooleanParkingDataList1(
+              binaryPayload); //converts the string to booleon equivilant
+
+          // Set the payload to the state variable
+
+          // Return the payload
+          return hexPayload;
+        } else {
+          print("else");
+          throw Exception('No valid result in the response');
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print(e);
+      throw e; // Rethrow the exception to handle it in the UI
+    }
+  }
+
+  GetParkingData2(String authorization) async {
+    //Function for getting parking data from tago.io and converting to booleon string
+
+    try {
+      String url =
+          "https://api.tago.io/data?variable=payload&query=last_value"; //this url also encodes which specific data we would like with the ?variable&query
+      final response2 = await http.get(Uri.parse(url),
+          //uses http.get to recieve parking data and uses uri to create objects from a string
+          headers: {
+            HttpHeaders.authorizationHeader:
+            authorization, //password required by tago.io
+          });
+      // print(response2.body); //for testing
+      if (response2.statusCode == 200) {
+        //if we recieve a valid response
+
+        // Parse JSON and extract payload
+        Map<String, dynamic> jsonResponse =
+        json.decode(response2.body); //map the contents of the string
+
+        if (jsonResponse.containsKey("result") && //is this what we expected?
+            jsonResponse["result"] is List &&
+            jsonResponse["result"].isNotEmpty) {
+          String hexPayload = jsonResponse["result"][0][
+          "value"]; //we recieve a 'result' that has a 'value' we want the first one of that
+          print(hexPayload);
+          String binaryPayload = hexToBinary(
+              hexPayload); //converts to a string of 1's and 0's from hex
+          setBooleanParkingDataList2(
+              binaryPayload); //converts the string to booleon equivilant
+
+          // Set the payload to the state variable
+
+          // Return the payload
+          return hexPayload;
+        } else {
+          print("else");
+          throw Exception('No valid result in the response');
+        }
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print(e);
+      throw e; // Rethrow the exception to handle it in the UI
+    }
+  }
+
+  void setBooleanParkingDataList1(String binaryPayload) {
+    List<bool> updatedList = binaryPayload //create list of type bool
+        .split('') //split the string in to individual characters
+        .map((char) => char == '1') //asks if char = 1 and
+        .toList(); //if yes map that value to the list
+
+    setState(() {
+      hotWheelsData = updatedList;
+
+      //   print(hotWheelsData);
+      //print(frmPayload);
+    });
+  }
+
+  void setBooleanParkingDataList2(String binaryPayload) {
+    List<bool> updatedList = binaryPayload //create list of type bool
+        .split('') //split the string in to individual characters
+        .map((char) => char == '1') //asks if char = 1 and
+        .toList(); //if yes map that value to the list
+
+    setState(() {
+      CHWLot1Data = updatedList;
+      //hotWheelsData = updatedList;
+      // print(CHWLot1Data);
+    });
+  }
+
+  String hexToBinary(String hex) {
+    // Convert hexadecimal string to binary
+    String binaryString = BigInt.parse(hex, radix: 16).toRadixString(2);
+
+    // Calculate the number of leading zeros to pad
+    int numLeadingZeros = hex.length * 4 - binaryString.length;
+
+    // Pad with leading zeros
+    String paddedBinaryString = '0' * numLeadingZeros + binaryString;
+
+    return paddedBinaryString;
+  }
 
 
 
@@ -50,6 +212,35 @@ class _MapState extends State<Map> {
 
 
   Widget build(BuildContext context) {
+    int HWA = 0;
+
+
+    for (int i = 0; i < 24; i++) {
+      bool value = hotWheelsData[i];
+
+      if (!value) {
+        HWA++;
+      }
+    }
+
+      double hotWheelsHue = (HWA - 0) * ((180 - 0) / (24 - 0)) + 0;
+
+
+
+
+
+
+
+    int CHA = 0;
+
+    for (int i = 0; i < 180; i++) {
+      bool value = CHWLot1Data[i];
+
+      if (!value) {
+        CHA++;
+      }
+
+    }
     return Scaffold(
        appBar: AppBar(
         backgroundColor: Colors.black,
@@ -97,28 +288,7 @@ class _MapState extends State<Map> {
 
             return Column(
                 children: [
-                  Row(children: [
-                    Expanded(
-                      child: TextFormField(
-                          controller: _searchController,
-                          textCapitalization: TextCapitalization.words,
-                          decoration: InputDecoration(
-                              hintText: 'Search by Lot'),
-                          onChanged: (value) {
-                            print(value);
-                          }
 
-
-                      ),),
-                    IconButton(onPressed: () {
-
-
-                    },
-                      icon: Icon(Icons.search),
-
-                    ),
-                  ],
-                  ),
                   Expanded(
 
 
@@ -133,9 +303,9 @@ class _MapState extends State<Map> {
 
                             infoWindow: InfoWindow(
                                 title: 'CHW lot1',
-                                snippet: '567 Available'),
+                                snippet: '$CHA Available'),
 
-                            icon: BitmapDescriptor.defaultMarkerWithHue(30.0),
+                            icon: BitmapDescriptor.defaultMarkerWithHue(CHA.toDouble()),
 
                             onTap: () {
                                 showModalBottomSheet(
@@ -153,7 +323,7 @@ class _MapState extends State<Map> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => chwlot1(
-                    booleanParkingDataList: widget.booleanParkingDataList,
+                    CHWLot1Data: CHWLot1Data,
                   )));
                 },
                 child: Text('Go to PISE Lot'),
@@ -171,7 +341,7 @@ class _MapState extends State<Map> {
                             markerId: MarkerId("CHW lot2"),
                             infoWindow: InfoWindow(
                                 title: 'CHW lot2',
-                                snippet: '567 Available'
+                                snippet: 'X Available'
                             ),
 
                             icon: BitmapDescriptor.defaultMarkerWithHue(60.0),
@@ -185,7 +355,7 @@ class _MapState extends State<Map> {
                             markerId: MarkerId("CBA lot1"),
                             infoWindow: InfoWindow(
                                 title: 'CBA lot1',
-                                snippet: '12 Available'),
+                                snippet: 'X Available'),
                             // number of parking stalls
                             icon: BitmapDescriptor.defaultMarkerWithHue(120.0),
                             onTap: () {
@@ -194,11 +364,13 @@ class _MapState extends State<Map> {
                             position: Teclot),
 
 
+
+
                         Marker(
                             markerId: MarkerId("Portable A Lot"),
                             infoWindow: InfoWindow(
                                 title: 'Portable A lot',
-                                snippet: '78 Available'
+                                snippet: 'X Available'
                             ),
 
                             icon: BitmapDescriptor.defaultMarkerWithHue(45.0),
@@ -206,6 +378,43 @@ class _MapState extends State<Map> {
                               _showFront(context, "Portable A Lot");
                             },
                             position: Frontlot),
+
+
+                        Marker(
+                            markerId: MarkerId("Hot Wheels Lot"),
+                            infoWindow: InfoWindow(
+                                title: 'Hot Wheels Lot',
+                                snippet: '$HWA Available'),
+                            // number of parking stalls
+                            icon: BitmapDescriptor.defaultMarkerWithHue(hotWheelsHue),
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (builder) {
+                                  return Container(
+                                    height: 200,
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: Text('Hot Wheels Lot'),
+                                          subtitle: Text("Number of parking stalls and other information"),
+                                        ),
+                                        const SizedBox(height: 60),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => hotWheels(hotWheelsData: hotWheelsData,)));
+                                          },
+                                          child: Text('Go to Hot Wheels Lot'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            position: HHLatLong),
+
+
 
                       },
 
@@ -237,6 +446,15 @@ class _MapState extends State<Map> {
      Navigator.push(context, MaterialPageRoute(builder: (context) => frontlot()));
 
   }
+
+void _navigateToHotWheels(BuildContext context, String lotName) {
+  // Implement logic to navigate to another page here
+  // For example:
+  Navigator.push(context, MaterialPageRoute(builder: (context) => hotWheels(hotWheelsData: [],)));
+
+}
+
+
 
   void _navigateToTech(BuildContext context, String lotName) {
     // Implement logic to navigate to another page here
@@ -275,18 +493,7 @@ void _showFront (BuildContext context, String lotName) {
               const SizedBox(height: 60),
               ElevatedButton(
                 child: Text('Go to Lot'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
 
-                  textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic),
-
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(600))),
-                      shadowColor: Colors.lightBlue,
-          ),
 
 
                 onPressed: () {
@@ -353,6 +560,33 @@ void _showFront (BuildContext context, String lotName) {
       },
     );
   }
+
+void _showHW (BuildContext context, String lotName) {
+  showModalBottomSheet(
+    context: context,
+    builder: (builder) {
+      return Container(
+        height: 200,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(lotName),
+              subtitle: Text("Number of parking stalls and other information"),
+            ),
+            const SizedBox(height: 60),
+            ElevatedButton(
+              onPressed: () {
+                _navigateToHotWheels(context, lotName);
+              },
+              child: Text('Go to Hot Wheels Lot'),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 
 
 Future<Position> _determinePosition() async {

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:g_p/format/LotLayout.dart';
-import 'package:flexible/flexible.dart';
-import 'package:g_p/pages/dataTesting.dart';
+import 'package:g_p/format/dataRetrieval.dart';
 
 String jsonURL = "https://storage.googleapis.com/getparked/chwlot1a.json";
+String httpHeader = "3a2a6522-9335-491e-addd-63521d380e5d";
 
 class chwlot1 extends StatefulWidget {
-  final List<bool> booleanParkingDataList;
-  chwlot1({required this.booleanParkingDataList});
+   List<bool> CHWLot1Data;
+  chwlot1(
+      {required this.CHWLot1Data});
 
   @override
   _chwlot1State createState() => _chwlot1State();
@@ -16,6 +17,7 @@ class chwlot1 extends StatefulWidget {
 class _chwlot1State extends State<chwlot1> {
   ParkingLot? parkingLot;
   Future<ParkingLot>? futureParkingLot;
+  Future<List<bool>>? futureParkingData;
 
   double imageHeight = 1080;
   double imageWidth = 1920;
@@ -25,6 +27,7 @@ class _chwlot1State extends State<chwlot1> {
   void initState() {
     super.initState();
     fetchData();
+    futureParkingData = GetParkingData(httpHeader);
   }
 
   Future<void> fetchData() async {
@@ -32,52 +35,46 @@ class _chwlot1State extends State<chwlot1> {
     futureParkingLot = ParkingLot().setupDetailed(jsonURL);
     parkingLot = await futureParkingLot;
 
-    setState(() {
-      // Update booleanParkingDataList here with your logic
-    });
+
+
   }
 
 
 
- // ParkingLot? parkingLot = ParkingLot(
- //   lotName: "Default Lot",
- //   lotURL: "https://example.com/default-lot.jpg",
- //   totalStalls: 0,
- //   parkingStalls: [],
- // ); //create a default parkinglot in case of null
-
- // Future<ParkingLot> futureParkingLot = ParkingLot().setupDetailed(jsonURL); //get and parse the parking lot info
-
- // double imageHeight = 1080;
- // double imageWidth = 1920;
- // int rotation = 0;
-
-
-
-  List<bool> booleanParkingDataList = [];
-
   @override
   Widget build(BuildContext context) { //build the UI
+     print(widget.CHWLot1Data);
     if (MediaQuery.of(context).orientation == Orientation.portrait) { //asks the screen orientation
       rotation = 1;
     } else {
       rotation = 0;
     }
-    int countAvailable = 0;
-    int countOccupied = 0;
-    for (bool value in widget.booleanParkingDataList) {
-      if (value) {
-        // true
-        countOccupied++;
-      } else {
-        countAvailable++;
-      }
-    }
+     int countAvailable = 0;
+     int countOccupied = 0;
+
+     for (int i = 0; i < 180; i++) {
+       bool value = widget.CHWLot1Data[i];
+
+       if (!value) {
+         countAvailable++;
+       } else {
+         countOccupied++;
+       }
+     }
+
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar:
-            AppBar(backgroundColor: Colors.black12, title: Text('CHW lot1')),
+        appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                // Pass back the updated data to the previous screen
+                Navigator.pop(context, widget.CHWLot1Data);
+              },
+            ),
+            backgroundColor: Colors.black12,
+            title: Text('CHW Lot 1')),
         //
 
         body: SingleChildScrollView(
@@ -92,7 +89,7 @@ class _chwlot1State extends State<chwlot1> {
                     } else if (snapshot.hasData) {
                       parkingLot = snapshot.data;
                       return Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(22, 0, 22, 0),
+                        padding: EdgeInsetsDirectional.fromSTEB(40, 0, 40, 0),
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -112,7 +109,7 @@ class _chwlot1State extends State<chwlot1> {
                                   parkingLot!.parkingStalls,
                                   imageWidth,
                                   imageHeight,
-                                  widget.booleanParkingDataList,
+                                  widget.CHWLot1Data,
                                 ),
                               ),
                             ),
@@ -199,41 +196,16 @@ class _chwlot1State extends State<chwlot1> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 4),
-                    child: Text(
-                      'Handicapped:',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 4),
-                    child: Text(
-                      ' 3',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.blueGrey,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+
               ElevatedButton(
-                onPressed: fetchData,
-              child: Text('Refresh'),
-              
-                )
+                onPressed: () async {
+                  List<bool> parkingData = await GetParkingData(httpHeader);
+                  setState(() {
+                    widget.CHWLot1Data = parkingData;
+                  });
+                },
+                child: Text('Refresh'),
+              )
             ],
           ),
         )

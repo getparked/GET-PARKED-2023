@@ -8,7 +8,7 @@ import 'package:g_p/pages/dataTesting.dart';
 class Nav extends StatefulWidget {
   const Nav({super.key});
 
-  
+
   @override
   _NavState createState() => _NavState();
 }
@@ -17,14 +17,14 @@ class _NavState extends State<Nav> {
   int _selectedIndex = 0;
   List<Widget> _widgetOptions = <Widget>[
     TTNDataPage(),
-    Map(booleanParkingDataList: []),
+    gMap(),
     Settings1NotificationsWidget(),
   ];
 
 
-  void _onItemTap(int index) {
+  void _onItemTap(int indek) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = indek;
     });
   }
 
@@ -40,27 +40,27 @@ class _NavState extends State<Nav> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
 
-        
+
       ),
 
-      
+
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[                 // navigatoion bar items
           BottomNavigationBarItem(
             backgroundColor: Colors.black,
             icon: Icon(Icons.home),                             // index 1
             label: 'Home',
-            ),
+          ),
 
-            BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.map_outlined),
             label: 'Map',                                   // index 2
-            ),
+          ),
 
-            BottomNavigationBarItem(
+          BottomNavigationBarItem(
             icon: Icon(Icons.settings),                             // index 3
             label: 'Settings',
-            ),
+          ),
 
 
         ],
@@ -69,8 +69,8 @@ class _NavState extends State<Nav> {
         onTap: _onItemTap,
 
 
-        
-        ),
-      );     
+
+      ),
+    );
   }
 }

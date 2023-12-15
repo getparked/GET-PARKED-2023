@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:g_p/format/LotLayout.dart';
-import 'package:flexible/flexible.dart';
 import 'package:g_p/format/dataRetrieval.dart';
 
-String jsonURL =
-    "https://storage.googleapis.com/getparked/HotWheelsLot9.json"; // URL to fetch parking lot dimensions from JSON file
+String jsonURL = "https://storage.googleapis.com/getparked/HotWheelsLot9.json"; // URL to fetch parking lot dimensions from JSON file
+String httpHeader = "252571ba-369d-465e-abad-690a5670b2ad";
 
 class hotWheels extends StatefulWidget {
-   List<bool> booleanParkingDataList;
+   List<bool> hotWheelsData;
 
   hotWheels(
-      {required this.booleanParkingDataList}); // constructer to receive parking data from another widget / class
+      {required this.hotWheelsData}); // constructer to receive parking data from another widget / class
 
   @override
   _hotWheelsState createState() => _hotWheelsState();
@@ -26,25 +25,24 @@ class _hotWheelsState extends State<hotWheels> {
   int rotation = 0; // rotation for parking lot image
 
 
-  bool refreshed = false;
 
   @override
   void initState() {
     super.initState();
     fetchData(); // fetch parking data when the widget is intialiazed
-    futureParkingData = GetParkingData();
+    futureParkingData = GetParkingData(httpHeader);
   }
 
   Future<void> fetchData() async {
-    futureParkingLot =
-        ParkingLot().setupDetailed(jsonURL); // Fetch data and update the state
+    futureParkingLot = ParkingLot().setupDetailed(jsonURL); // Fetch data and update the state
     parkingLot = await futureParkingLot;
 
-    setState(() {}); // Update booleanParkingDataList here with your logic
+
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.hotWheelsData);
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
       // Check screen orientation
       rotation = 1;
@@ -56,14 +54,18 @@ class _hotWheelsState extends State<hotWheels> {
     int countAvailable = 0;
     int countOccupied = 0;
 
-    for (bool value in widget.booleanParkingDataList) {
+
+
+    for (int i = 0; i < 24; i++) {
+      bool value = widget.hotWheelsData[i];
+
       if (value) {
-        // true
         countAvailable++;
       } else {
         countOccupied++;
       }
     }
+
 
     return Scaffold(
 
@@ -73,7 +75,7 @@ class _hotWheelsState extends State<hotWheels> {
             icon: Icon(Icons.arrow_back),
             onPressed: () {
               // Pass back the updated data to the previous screen
-              Navigator.pop(context, widget.booleanParkingDataList);
+              Navigator.pop(context, widget.hotWheelsData);
             },
           ),
             backgroundColor: Colors.black12,
@@ -92,7 +94,7 @@ class _hotWheelsState extends State<hotWheels> {
                     } else if (snapshot.hasData) {
                       parkingLot = snapshot.data;
                       return Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(22, 0, 22, 0),
+                        padding: EdgeInsetsDirectional.fromSTEB(40, 0, 40, 0),
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -118,7 +120,7 @@ class _hotWheelsState extends State<hotWheels> {
                                       parkingLot!.parkingStalls,
                                       imageWidth,
                                       imageHeight,
-                                      widget.booleanParkingDataList,
+                                      widget.hotWheelsData,
                                     ),
                                   );
                                 }
@@ -220,45 +222,12 @@ class _hotWheelsState extends State<hotWheels> {
                 ],
               ),
 
-              Row(                  // Handicapped Count
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
 
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 4),
-                    child: Text(
-                      'Handicapped:',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 4),
-                    child: Text(
-                      ' 3',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.blueGrey,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-
-                ],
-              ),
               ElevatedButton(
                 onPressed: () async {
-                  List<bool> parkingData = await GetParkingData();
+                  List<bool> parkingData = await GetParkingData(httpHeader);
                   setState(() {
-                    widget.booleanParkingDataList = parkingData;
+                    widget.hotWheelsData = parkingData;
                   });
                 },
                 child: Text('Refresh'),
