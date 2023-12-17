@@ -112,6 +112,8 @@ flutter run
 
 ### Parking Lot Page
 
+*Chwlot1 is kind of the template with proper commenting and other parking lots are mostly copy pasta with different variables
+
 * The code imports the necessary packages and files for the application.
 
 * The chwlot1 class is a stateful widget that represents the main screen of the application. It takes a list of boolean values booleanParkingDataList as a parameter.
