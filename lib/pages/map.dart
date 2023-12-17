@@ -1,4 +1,4 @@
-
+// This page uses flutters google maps integrations to allow users to find parking lots based on location
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -23,9 +23,9 @@ class gMap extends StatefulWidget {
 
 class _gMapState extends State<gMap> {
 
-  String HotWheelsHeader = "252571ba-369d-465e-abad-690a5670b2ad";
+  String HotWheelsHeader = "252571ba-369d-465e-abad-690a5670b2ad"; //Device identification and permission
   String CHWHeader = "3a2a6522-9335-491e-addd-63521d380e5d";
-  List<bool> hotWheelsData = List.filled(24, false);
+  List<bool> hotWheelsData = List.filled(24, false); //hard coded lot size because would get error if data was outside of range
 
   List<bool> CHWLot1Data = List.filled(180, false);
 
@@ -48,7 +48,7 @@ class _gMapState extends State<gMap> {
   Completer<GoogleMapController> _controller = Completer();
   TextEditingController _searchController = TextEditingController();
 
-  static const LatLng PISElot = LatLng(48.488845, -123.416393);
+  static const LatLng PISElot = LatLng(48.488845, -123.416393); //list of coordinates for placing pins
   static const LatLng PISElot2 = LatLng(48.488359, -123.415606);
   static const LatLng Teclot = LatLng(48.49100021607449, -123.41433389677556);
   static const LatLng Frontlot = LatLng(48.489749134000775, -123.41793289900832);
@@ -60,8 +60,8 @@ class _gMapState extends State<gMap> {
   @override
   void initState() {
     super.initState();
-    GetParkingData1(HotWheelsHeader);
-    GetParkingData2(CHWHeader);
+    GetParkingData1(HotWheelsHeader); //ugly and crude reaquiring data since it was a last minute bodge, would like to make more modular in future
+    GetParkingData2(CHWHeader); //most of the non widget stuff is copy pasted from dataTesting
   }
 
   GetParkingData1(String authorization) async {

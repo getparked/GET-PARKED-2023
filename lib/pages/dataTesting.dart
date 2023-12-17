@@ -112,7 +112,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
       }
     } catch (e) {
       print(e);
-      throw e; // Rethrow the exception to handle it in the UI
+      throw e;
     }
   }
 
@@ -205,13 +205,13 @@ class _TTNDataPageState extends State<TTNDataPage> {
 
   @override
   Widget build(BuildContext context) {
-    int HWA = 0;
+    int HWA = 0; //hot wheels availability
 
     for (int i = 0; i < 24; i++) {
-      bool value = hotWheelsData[i];
+      bool value = hotWheelsData[i]; // use hard number instead of variable.size since we end up with padding when we send our data.
 
       if (!value) {
-        HWA++;
+        HWA++;//just counting available spots, internally we agreed true = car
       }
     }
 
@@ -494,7 +494,7 @@ class _TTNDataPageState extends State<TTNDataPage> {
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
                           child: Text(
-                            'X AVAILABLE SPOTS',
+                            'X AVAILABLE SPOTS', //placeholder since lot not functional
                             style: TextStyle(
                               fontFamily: 'Urbanist',
                             ),

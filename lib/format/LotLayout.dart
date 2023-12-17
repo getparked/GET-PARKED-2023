@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+//This page describes the ParkingLot and ParkingStall classes. This allows us to parse the json data from the google cloud http pull.
+
 class ParkingLot {
   String lotName = 'default' ;
   String lotURL = 'jojo';
@@ -15,7 +17,7 @@ class ParkingLot {
     lotURL = json['lotURL'];
     totalStalls = json['totalStalls'];
 
-    parkingStalls = <ParkingStalls>[];
+    parkingStalls = <ParkingStalls>[];//a parking lot contains the list of parkingstalls
     json['parking_stalls'].forEach((v) {
       parkingStalls.add(new ParkingStalls.fromJson(v));
     });
@@ -36,7 +38,7 @@ class ParkingLot {
 
 
 
-  Future<ParkingLot> setupDetailed(String jsonURL) async {
+  Future<ParkingLot> setupDetailed(String jsonURL) async { //method for aquiring and parsing json data
 
 
     try {
@@ -56,24 +58,6 @@ class ParkingLot {
 
 
 
-   Future<ParkingLot> setupDetailed1(String jsonURL) async {
-
-
-    try {
-
-      //String url = "https://storage.googleapis.com/getparked/HotWheelsLot2.json"; //https://lora.mydevices.com/v1/networks/ttn/uplink    https://storage.googleapis.com/getparked/CHW%20lot1.json
-      //https://nam1.cloud.thethings.network/api/v3/as/applications/get-parked-lot-0/devices/eui-70b3d57ed0061863/packages/storage/uplink_message
-      final response = await http.get(Uri.parse(jsonURL));
-      //print(response);
-      return ParkingLot.fromJson1(jsonDecode(response.body));
-    }
-
-    catch (e) {
-      print(e);
-      throw e; // Rethrow the exception to handle it in the UI
-    }
-  }
-
 
 
 
@@ -83,7 +67,7 @@ class ParkingStalls {
   int id = 0;
   int x = 0;
   int y = 0;
-  int OffsetX = 0;
+  int OffsetX = 0; //offset is used for adjusting stall size, we use this for vertical vs horizontal parking stalls, could probably use rotation instead
   int OffsetY = 0;
 
   ParkingStalls({

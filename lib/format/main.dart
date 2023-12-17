@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget{
     return MaterialApp(
       title: 'Get Parked App',
       debugShowCheckedModeBanner: false,
-      home: Nav(),  
+      home: Nav(),  //The first page that opens is nav, With it defaulting to the home page overtop of it.
     );
   }
 }

@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+//just storing functions so that we can refresh in the parking lot pages.
+
 Future<List<bool>> GetParkingData(String authorization) async {
   //Function for getting parking data from tago.io and converting to booleon string
   try {

@@ -1,3 +1,6 @@
+//The nav or navigation bar allows for switching between home, map and settings page. It is the base on which other pages are loaded
+// 2020 hindsight probably should have done data acquisition here.
+
 import 'package:flutter/material.dart';
 import 'package:g_p/pages/map.dart';
 import 'package:g_p/pages/Home_Screen.dart';

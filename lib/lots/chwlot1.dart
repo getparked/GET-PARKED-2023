@@ -8,7 +8,7 @@ String httpHeader = "3a2a6522-9335-491e-addd-63521d380e5d";
 class chwlot1 extends StatefulWidget {
    List<bool> CHWLot1Data;
   chwlot1(
-      {required this.CHWLot1Data});
+      {required this.CHWLot1Data}); //this page requires the lot data to be sent from either home page or map
 
   @override
   _chwlot1State createState() => _chwlot1State();
@@ -16,24 +16,24 @@ class chwlot1 extends StatefulWidget {
 
 class _chwlot1State extends State<chwlot1> {
   ParkingLot? parkingLot;
-  Future<ParkingLot>? futureParkingLot;
+  Future<ParkingLot>? futureParkingLot; //initializing variables
   Future<List<bool>>? futureParkingData;
 
-  double imageHeight = 1080;
+  double imageHeight = 1080; // the size of the background image for the lot. I have standardized on 1080p and this helps everything scale properly
   double imageWidth = 1920;
-  int rotation = 0;
+  int rotation = 0; //variable for device orientation
 
    @override
   void initState() {
     super.initState();
-    fetchData();
-    futureParkingData = GetParkingData(httpHeader);
+    fetchData();//fetches the json data for drawing the boxes
+    futureParkingData = GetParkingData(httpHeader); //
   }
 
   Future<void> fetchData() async {
     // Fetch data and update the state
     futureParkingLot = ParkingLot().setupDetailed(jsonURL);
-    parkingLot = await futureParkingLot;
+    parkingLot = await futureParkingLot; //converts future to normal
 
 
 
@@ -45,7 +45,7 @@ class _chwlot1State extends State<chwlot1> {
   Widget build(BuildContext context) { //build the UI
      print(widget.CHWLot1Data);
     if (MediaQuery.of(context).orientation == Orientation.portrait) { //asks the screen orientation
-      rotation = 1;
+      rotation = 1;//this is used for rotating image for better display
     } else {
       rotation = 0;
     }
@@ -66,7 +66,7 @@ class _chwlot1State extends State<chwlot1> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-            leading: IconButton(
+            leading: IconButton(//replaces normal back button to allow custom function
               icon: Icon(Icons.arrow_back),
               onPressed: () {
                 // Pass back the updated data to the previous screen
@@ -97,19 +97,19 @@ class _chwlot1State extends State<chwlot1> {
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: FittedBox(
+                          child: FittedBox(// fitted box scales everything withing to the size it has acess to. This keeps the painted boxes the correct size when changing screen size
                             fit: BoxFit.fitHeight,
-                            child: RotatedBox(
+                            child: RotatedBox( //rotates based on screen orientation, also works if you make a chrome window real skinny
                               quarterTurns: rotation,
                               child: CustomPaint(
                                 size: Size(imageWidth, imageHeight),
                                 child: Image.network(parkingLot!.lotURL),
                                 // Set the size as per your image dimensions
-                                foregroundPainter: RectanglePainter(
-                                  parkingLot!.parkingStalls,
+                                foregroundPainter: RectanglePainter( //foreground painter paints overtop of the google earth image of the parking lot
+                                  parkingLot!.parkingStalls,// parking lot layout data
                                   imageWidth,
                                   imageHeight,
-                                  widget.CHWLot1Data,
+                                  widget.CHWLot1Data,// actual ocupancy data
                                 ),
                               ),
                             ),
@@ -122,7 +122,7 @@ class _chwlot1State extends State<chwlot1> {
                   },
                 ),
               ),
-              Row(
+              Row( //mostly formatting and padding of basic text widgets********************************************************
                // mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 //crossAxisAlignment: CrossAxisAlignment.end,
@@ -197,11 +197,11 @@ class _chwlot1State extends State<chwlot1> {
                 ],
               ),
 
-              ElevatedButton(
+              ElevatedButton(//refresh button
                 onPressed: () async {
-                  List<bool> parkingData = await GetParkingData(httpHeader);
+                  List<bool> parkingData = await GetParkingData(httpHeader); //reaquire data
                   setState(() {
-                    widget.CHWLot1Data = parkingData;
+                    widget.CHWLot1Data = parkingData;//set the state so the app knows to redraw
                   });
                 },
                 child: Text('Refresh'),
@@ -213,7 +213,7 @@ class _chwlot1State extends State<chwlot1> {
   }
 }
 
-class RectanglePainter extends CustomPainter {
+class RectanglePainter extends CustomPainter { //custom paint function for drawing the pretty boxes
   final List<ParkingStalls> parkingStalls;
   final double imageWidth;
   final double imageHeight;
@@ -224,23 +224,23 @@ class RectanglePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (int i = 0; i < parkingStalls.length; i++) {
-      final paint = Paint()..style = PaintingStyle.fill;
+    for (int i = 0; i < parkingStalls.length; i++) { //for every stall in the layout page
+      final paint = Paint()..style = PaintingStyle.fill;//paint colors in the box
 
-      final paint2 = Paint()
+      final paint2 = Paint() //paint 2 draws the nice border
         ..color = Colors.black87
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4.0;
 
-      final x = ((parkingStalls[i].x + 2) / imageWidth) * size.width;
+      final x = ((parkingStalls[i].x + 2) / imageWidth) * size.width; //attempt to make this work in case of different image size
       final y = ((parkingStalls[i].y + 2) / imageHeight) * size.height;
       final x2 = (parkingStalls[i].x / imageWidth) * size.width;
       final y2 = (parkingStalls[i].y / imageHeight) * size.height;
 
-      final rect = Rect.fromPoints(Offset(x, y), Offset(x + 27, y + 76));
-      final rect2 = Rect.fromPoints(Offset(x2, y2), Offset(x2 + 30, y2 + 80));
+      final rect = Rect.fromPoints(Offset(x, y), Offset(x + 27, y + 76)); //cerate a rect from my hard coded locations and a set box size
+      final rect2 = Rect.fromPoints(Offset(x2, y2), Offset(x2 + 30, y2 + 80));//note: hotwheels paint function is slightly different since it incorporates different box orientation
 
-      paint.color = booleanParkingDataList[i] ? Colors.red : Colors.green;
+      paint.color = booleanParkingDataList[i] ? Colors.red : Colors.green; //use the occupany data to determine color
       canvas.drawRect(rect, paint);
       canvas.drawRect(rect2, paint2);
     }
