@@ -5,10 +5,9 @@ Welcome to the GET PARKED 2023 project, a parking spot detection system develope
 ## Requirements
 Before getting started, make sure you have the following tools installed:
 
-* [Visual Studio Code](https://code.visualstudio.com/)
+* [Visual Studio Code](https://code.visualstudio.com/) or * [Android Studio](https://developer.android.com/studio)
 * [Flutter SDK](https://flutter.dev/docs/get-started/install)
-* [Android Studio](https://developer.android.com/studio)
-* Android Device (or Android Studio Emulator)
+* Android Device (or Android Emulator)
 
 
 ## Installation
@@ -56,7 +55,7 @@ flutter run
 ## Pages
 
 
-### Homepage
+### Homepage* (we dont actually use Home_Screen.dart, dataTesting.dart was initially a test but became the actual homescreen)
 * The Home_Screen class is a stateless widget.
   
 * The controller variable is created to handle text editing.
@@ -90,6 +89,10 @@ flutter run
 * The _navigateToFront, _navigateToTech, and _navigateToPISE2 methods are called when the user taps on the "Go to Lot" button in the bottom sheet. They navigate to the respective lot pages.
 
 * The FutureBuilder widget is used to handle the asynchronous operation of getting the user's position. It displays a loading indicator while waiting for the position, an error message if there is an error, and the map with markers if the position is obtained successfully.
+* Last minute copy paste of dataTesting data retrieval to ensure up to date parking data. 
+  
+
+  
 
 
 ### Settings
