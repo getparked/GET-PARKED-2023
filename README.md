@@ -112,7 +112,7 @@ flutter run
 
 ### Parking Lot Page
 
-*Chwlot1 is kind of the template with proper commenting and other parking lots are mostly copy pasta with different variables
+*Chwlot1 and HotWheels is kind of the template with proper commenting and other parking lots are mostly copy paste with different variables
 
 * The code imports the necessary packages and files for the application.
 
