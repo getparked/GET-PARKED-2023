@@ -55,7 +55,7 @@ flutter run
 ## Pages
 
 
-### Homepage* (we dont actually use Home_Screen.dart, dataTesting.dart was initially a test but became the actual homescreen)
+### Homepage (dataTesting.dart) 
 * The Home_Screen class is a stateless widget.
   
 * The controller variable is created to handle text editing.
